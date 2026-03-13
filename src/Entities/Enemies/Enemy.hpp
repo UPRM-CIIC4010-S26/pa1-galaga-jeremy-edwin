@@ -50,12 +50,21 @@ class Enemy {
                 if (p.second) {
                     p.second->update(p.first, target);
 
-                    for (Projectile& p2 : Projectile::projectiles) {
-                        if (p2.ID != 1 && HitBox::Collision(p.second->hitBox, p2.getHitBox())) {
-                            p.second->health--;
-                            p2.del = true;
-                        }
+                for (Projectile& p2 : Projectile::projectiles) {
+                    if (p2.ID != 1 && HitBox::Collision(p.second->hitBox, p2.getHitBox())) {
+                        p.second->health--;
+                        p2.del = true;
+
+                    if (p.second->health > 0) {
+                        PlaySound(SoundManager::hit);
                     }
+                    else {
+                        PlaySound(SoundManager::dead);
+                    }
+
+                    p2.del = true;
+                }
+            }
 
                     if (p.second->health <= 0) {
                         Animation::animations.push_back(

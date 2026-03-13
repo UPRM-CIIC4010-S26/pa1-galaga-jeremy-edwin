@@ -6,6 +6,8 @@ class DyEnemy : public Enemy {
         float angle = 135;
         float aimAngle = 225;
         bool loop = false;
+        bool textureChosen = false;
+        Rectangle chosenRect;
 
     public:
         DyEnemy(float x, float y) : Enemy(x, y) { 
