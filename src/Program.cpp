@@ -54,7 +54,30 @@ void Program::Update() {
                 pauseFrames = 120;
                 lives--;
             }
-        }
+            if (p.second && p.second->health <= 0) {
+                if (dynamic_cast<StdEnemy*>(p.second)) score += 100;
+                if (dynamic_cast<SpEnemy*>(p.second)) score += 200;
+                if (dynamic_cast<DyEnemy*>(p.second)) score += 300;
+                delete p.second;
+                p.second = nullptr;
+
+                int livesToGain = score / 1000;
+                int newLives = livesToGain - extraLivesGained;
+
+                if (newLives > 0) {
+                    lives += newLives;
+                    if (lives > 5) lives = 5; 
+                    extraLivesGained = livesToGain;
+                }
+
+
+        respawnCooldown = std::max(5, 1080 - score / 10);
+    }
+
+                
+
+
+        
 
         for (Projectile& p : Projectile::projectiles) { 
             p.update(); 
@@ -170,7 +193,9 @@ void Program::KeyInputs() {
     }
 
     if (!startup && !paused && !gameOver && pauseFrames <= 0) player->keyInputs();
-   
+    if (IsKeyPressed('K')) {
+        score += 500;
+    }
 }
 
 void Program::PlayerReset() {
@@ -197,6 +222,8 @@ void Program::Reset() {
     count = 0;
     delay = 0;
     lives = 3;
+    score = 0;
+    extraLivesGained = 0;
 
     // This will allow the enemies to respawn after reset. 
 
