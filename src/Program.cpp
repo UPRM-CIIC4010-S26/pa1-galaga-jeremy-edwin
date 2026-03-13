@@ -70,6 +70,10 @@ void Program::Update() {
 
 void Program::Draw() {
     background.Draw();
+<<<<<<< HEAD
+=======
+    DrawText(("Score: " + std::to_string(score)).c_str(), 10, 10, 20, WHITE);
+>>>>>>> c3367ae (fix again player score update)
     if (pauseFrames <= 0 && !gameOver) player->draw();
     for (Animation& a : Animation::animations) a.draw();
 
