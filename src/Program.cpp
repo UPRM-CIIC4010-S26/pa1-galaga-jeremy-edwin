@@ -35,18 +35,16 @@ void Program::Update() {
     pauseFrames = std::max(pauseFrames - 1, 0);
 
     if (!startup && !paused && !gameOver && pauseFrames <= 0) {
-        Enemy::ManageEnemies(player->hitBox);
         Enemy::ManageEnemies(player->hitBox, score);
         StdEnemy::attackReset();
         ManageEnemyRespawns();
         player->update();
 
-        for (std::pair<std::pair<float, float>, Enemy*> p : Enemy::enemies) {
+        for (std::pair<std::pair<float, float>, Enemy*>& p : Enemy::enemies) {
             if (p.second && HitBox::Collision(player->hitBox, p.second->hitBox)) {
                 Animation::animations.push_back(
-                    Animation(player->position.first, player->position.second, 16, 0, 33, 34, 30 ,30, 3, ImageManager::SpriteSheet)
+                    Animation(player->position.first, player->position.second, 16, 0, 33, 34, 30, 30, 3, ImageManager::SpriteSheet)
                 );
-
                 PlaySound(SoundManager::gameOver);
                 Projectile::projectiles.clear();
                 player->position.first = GetScreenWidth() / 2 - 15;
@@ -54,39 +52,31 @@ void Program::Update() {
                 pauseFrames = 120;
                 lives--;
             }
+
             if (p.second && p.second->health <= 0) {
                 if (dynamic_cast<StdEnemy*>(p.second)) score += 100;
                 if (dynamic_cast<SpEnemy*>(p.second)) score += 200;
                 if (dynamic_cast<DyEnemy*>(p.second)) score += 300;
+
                 delete p.second;
                 p.second = nullptr;
+                respawnCooldown = std::max(5, 1080 - score / 10);
+            }
+        }
 
-                int livesToGain = score / 1000;
-                int newLives = livesToGain - extraLivesGained;
+        int livesToGain = score / 1000;
+        int newLives = livesToGain - extraLivesGained;
+        if (newLives > 0) {
+            lives += newLives;
+            if (lives > 5) lives = 5;
+            extraLivesGained = livesToGain;
+        }
 
-                if (newLives > 0) {
-                    lives += newLives;
-                    if (lives > 5) lives = 5; 
-                    extraLivesGained = livesToGain;
-                }
-
-
-        respawnCooldown = std::max(5, 1080 - score / 10);
-    }
-
-                
-
-
-        
-
-        for (Projectile& p : Projectile::projectiles) { 
-            p.update(); 
-
+        for (Projectile& p : Projectile::projectiles) {
+            p.update();
             if (p.ID != 0 && HitBox::Collision(player->hitBox, p.getHitBox())) {
-
-        PlayerReset();
-    }
-
+                PlayerReset();
+            }
         }
 
         if (lives <= 0 && pauseFrames <= 0) gameOver = true;
