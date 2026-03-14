@@ -13,6 +13,10 @@ int main ()
 	Program Galaga;
 	ImageManager::Load();
 	SoundManager::Load();
+	SoundManager::Load();
+	PlayMusicStream(SoundManager::bgm);
+	SoundManager::bgm.looping = true;
+	SetMusicVolume(SoundManager::bgm, 0.2f);
 
 	if (!IsWindowReady()) {
     TraceLog(LOG_ERROR, "Window failed to initialize!");
@@ -20,6 +24,9 @@ int main ()
 }
 
 	while (!WindowShouldClose()) {
+		
+		UpdateMusicStream(SoundManager::bgm);
+
 		BeginDrawing();
 		ClearBackground(BLACK);
 
