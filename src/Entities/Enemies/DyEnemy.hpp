@@ -10,7 +10,7 @@ class DyEnemy : public Enemy {
         Rectangle chosenRect;
 
     public:
-        int pointvalue = 5;
+        int pointvalue = 300;
         DyEnemy(float x, float y) : Enemy(x, y) { 
             this->cooldown = GetRandomValue(90, 300);
             this->health = 1; 

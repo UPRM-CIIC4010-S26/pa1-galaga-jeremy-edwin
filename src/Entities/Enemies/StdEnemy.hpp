@@ -9,7 +9,7 @@ class StdEnemy : public Enemy {
         inline static int attackCooldown = 360;
 
     public:
-        int pointvalue = 5;
+        int pointvalue = 50;
         inline static bool attackInProgress = false;
 
         StdEnemy(float x, float y) : Enemy(x, y) { 
