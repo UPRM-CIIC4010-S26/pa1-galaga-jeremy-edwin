@@ -34,7 +34,8 @@ class Enemy {
         virtual void draw() = 0;
         virtual void update(std::pair<float, float> pos, HitBox target) = 0;
         virtual void attack(HitBox target) = 0;
-
+        virtual int getScore() = 0;
+        
         void frameChange() {
             frameCooldown--;
 
@@ -70,6 +71,7 @@ class Enemy {
                         Animation::animations.push_back(
                             Animation(p.second->position.first, p.second->position.second, 155, 0, 33, 33, 30, 30, 4, ImageManager::SpriteSheet)
                         );
+                        score += p.second->getScore();
                         p.second = nullptr;
                     }
                 }
