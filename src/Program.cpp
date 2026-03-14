@@ -30,8 +30,10 @@ Program::Program() {
 void Program::Update() {
     for (Animation& a : Animation::animations) a.update();
     for (int i = 0; i < Animation::animations.size(); i++) {
-        if (Animation::animations[i].done) Animation::animations.erase(Animation::animations.begin() + i);
+        if (Animation::animations[i].done)
+            Animation::animations.erase(Animation::animations.begin() + i);
     }
+
     pauseFrames = std::max(pauseFrames - 1, 0);
 
     if (!startup && !paused && !gameOver && pauseFrames <= 0) {
@@ -39,11 +41,12 @@ void Program::Update() {
         StdEnemy::attackReset();
         ManageEnemyRespawns();
         player->update();
-
-        for (std::pair<std::pair<float, float>, Enemy*>& p : Enemy::enemies) {
+        
+        for (auto& p : Enemy::enemies) {
             if (p.second && HitBox::Collision(player->hitBox, p.second->hitBox)) {
                 Animation::animations.push_back(
-                    Animation(player->position.first, player->position.second, 16, 0, 33, 34, 30, 30, 3, ImageManager::SpriteSheet)
+                    Animation(player->position.first, player->position.second,
+                              16, 0, 33, 34, 30, 30, 3, ImageManager::SpriteSheet)
                 );
                 PlaySound(SoundManager::gameOver);
                 Projectile::projectiles.clear();
@@ -51,16 +54,6 @@ void Program::Update() {
                 p.second->health = 0;
                 pauseFrames = 120;
                 lives--;
-            }
-
-            if (p.second && p.second->health <= 0) {
-                if (dynamic_cast<StdEnemy*>(p.second)) score += 100;
-                if (dynamic_cast<SpEnemy*>(p.second)) score += 200;
-                if (dynamic_cast<DyEnemy*>(p.second)) score += 300;
-
-                delete p.second;
-                p.second = nullptr;
-                respawnCooldown = std::max(5, 1080 - score / 10);
             }
         }
 
@@ -79,11 +72,14 @@ void Program::Update() {
             }
         }
 
-        if (lives <= 0 && pauseFrames <= 0) gameOver = true;
+        if (lives <= 0 && pauseFrames <= 0)
+            gameOver = true;
+
         Projectile::CleanProjectiles();
         Projectile::ProjectileCollision();
     }
 }
+
 
 void Program::Draw() {
     background.Draw();
